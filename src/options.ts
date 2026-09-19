@@ -171,6 +171,24 @@ export type CreateNodeOptions = {
    */
   keepUndefined?: boolean | null
 
+  /**
+   * During node construction, extract entries common to multiple sibling
+   * mappings into an anchored mapping, and replace them in each source
+   * mapping with a `<<` merge key referencing the anchor. The anchored
+   * mapping is placed within the merge value of the first mapping of each
+   * group, so that its anchor is always defined before any alias to it.
+   *
+   * If a number, sets the minimum number of common entries that a group of
+   * mappings must share for the extraction to apply; `true` uses `3`.
+   *
+   * Merge keys are a YAML 1.1 feature, so this option has no effect unless
+   * the schema supports them, e.g. when using the `'yaml-1.1'` schema or
+   * the `merge` option.
+   *
+   * Default: `false`
+   */
+  mergeCommonEntries?: boolean | number
+
   onTagObj?: (tagObj: ScalarTag | CollectionTag) => void
 
   /**

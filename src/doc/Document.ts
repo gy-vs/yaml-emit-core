@@ -20,6 +20,7 @@ import { stringifyDocument } from '../stringify/stringifyDocument.ts'
 import { anchorNames, findNewAnchor } from './anchors.ts'
 import { applyReviver } from './applyReviver.ts'
 import { Directives } from './directives.ts'
+import { extractCommonEntries } from './mergeCommonEntries.ts'
 import { NodeCreator } from './NodeCreator.ts'
 
 export type DocValue = Scalar | YAMLSeq | YAMLMap | YAMLSet
@@ -202,6 +203,7 @@ export class Document<
     }
     const node = nc.create(value, options?.tag)
     nc.setAnchors()
+    if (options?.mergeCommonEntries) extractCommonEntries(node, this, options)
     return node
   }
 
@@ -223,6 +225,9 @@ export class Document<
       V extends Primitive | Node ? V : Node
     >
     nc.setAnchors()
+    if (options.mergeCommonEntries && pair.value) {
+      extractCommonEntries(pair.value, this, options)
+    }
     return pair
   }
 
