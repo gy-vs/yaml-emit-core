@@ -63,7 +63,10 @@ export class YAMLSet<
 
   add(
     value: T | NodeOf<T>,
-    options?: Omit<CreateNodeOptions, 'aliasDuplicateObjects'>
+    options?: Omit<
+      CreateNodeOptions,
+      'aliasDuplicateObjects' | 'mergeCommonKeys'
+    >
   ): this {
     if (this.has(value)) return this
 

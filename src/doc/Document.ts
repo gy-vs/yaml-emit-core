@@ -20,6 +20,7 @@ import { stringifyDocument } from '../stringify/stringifyDocument.ts'
 import { anchorNames, findNewAnchor } from './anchors.ts'
 import { applyReviver } from './applyReviver.ts'
 import { Directives } from './directives.ts'
+import { mergeCommonKeys } from './mergeCommonKeys.ts'
 import { NodeCreator } from './NodeCreator.ts'
 
 export type DocValue = Scalar | YAMLSeq | YAMLMap | YAMLSet
@@ -202,6 +203,9 @@ export class Document<
     }
     const node = nc.create(value, options?.tag)
     nc.setAnchors()
+    if (options?.mergeCommonKeys) {
+      mergeCommonKeys(this, node, options.mergeCommonKeys, options.anchorPrefix)
+    }
     return node
   }
 
@@ -223,6 +227,9 @@ export class Document<
       V extends Primitive | Node ? V : Node
     >
     nc.setAnchors()
+    if (options.mergeCommonKeys) {
+      mergeCommonKeys(this, pair, options.mergeCommonKeys, options.anchorPrefix)
+    }
     return pair
   }
 

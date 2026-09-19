@@ -171,6 +171,24 @@ export type CreateNodeOptions = {
    */
   keepUndefined?: boolean | null
 
+  /**
+   * During node construction, extract key-value pairs that are common to
+   * sibling mappings into an anchored mapping, and replace the extracted
+   * pairs in each mapping with a `<<` merge key referring to that anchor.
+   * The anchored mapping is placed within the first mapping of each sibling
+   * group, so anchors always precede their aliases in the output.
+   *
+   * As merge keys are a YAML 1.1 feature, this requires merge key support in
+   * the schema, i.e. a YAML 1.1 schema or the `merge` schema option.
+   * With any other schema this option has no effect.
+   *
+   * If a number, sets the minimum number of shared key-value pairs required
+   * for extraction.
+   *
+   * Default: `false` (minimum shared pairs: `3`)
+   */
+  mergeCommonKeys?: boolean | number
+
   onTagObj?: (tagObj: ScalarTag | CollectionTag) => void
 
   /**

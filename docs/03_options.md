@@ -102,13 +102,34 @@ Multiple merge keys may be used on the same map, with earlier values taking prec
 
 Used by: `stringify()`, `new Document()`, `doc.createNode()`, and `doc.createPair()`
 
-| Name                  | Type      | Default | Description                                                                                                                                      |
-| --------------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| aliasDuplicateObjects | `boolean` | `true`  | During node construction, use anchors and aliases to keep strictly equal non-null objects as equivalent in YAML.                                 |
-| anchorPrefix          | `string`  | `'a'`   | Default prefix for anchors, resulting in anchors `a1`, `a2`, ... by default.                                                                     |
-| flow                  | `boolean` | `false` | Force the top-level collection node to use flow style.                                                                                           |
-| keepUndefined         | `boolean` | `false` | Keep `undefined` object values when creating mappings and return a Scalar node when stringifying `undefined`.                                    |
-| tag                   | `string`  |         | Specify the top-level collection type, e.g. `'!!omap'`. Note that this requires the corresponding tag to be available in this document's schema. |
+| Name                  | Type                 | Default | Description                                                                                                                                      |
+| --------------------- | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| aliasDuplicateObjects | `boolean`            | `true`  | During node construction, use anchors and aliases to keep strictly equal non-null objects as equivalent in YAML.                                 |
+| anchorPrefix          | `string`             | `'a'`   | Default prefix for anchors, resulting in anchors `a1`, `a2`, ... by default.                                                                     |
+| flow                  | `boolean`            | `false` | Force the top-level collection node to use flow style.                                                                                           |
+| keepUndefined         | `boolean`            | `false` | Keep `undefined` object values when creating mappings and return a Scalar node when stringifying `undefined`.                                    |
+| mergeCommonKeys       | `boolean ⎮ number`   | `false` | During node construction, extract key-value pairs common to sibling mappings into an anchored mapping, referenced via `<<` merge keys. Requires merge key support (YAML 1.1 schema or `merge: true`). A number sets the minimum number of shared pairs (default `3`). |
+| tag                   | `string`             |         | Specify the top-level collection type, e.g. `'!!omap'`. Note that this requires the corresponding tag to be available in this document's schema. |
+
+```js
+const jobs = [
+  { name: 'build', image: 'node:20', retries: 3, env: 'prod' },
+  { name: 'test', image: 'node:20', retries: 3, env: 'prod' }
+]
+stringify(jobs, { version: '1.1', mergeCommonKeys: true })
+// - <<: &a1
+//     image: node:20
+//     retries: 3
+//     env: prod
+//   name: build
+// - <<: *a1
+//   name: test
+```
+
+With `mergeCommonKeys` enabled, key-value pairs that are shared by at least two sibling mappings are extracted into an anchored mapping within the first of those mappings, and the other mappings refer to it with a `<<` merge key.
+The JavaScript value of each mapping is preserved: parsing the output with merge keys enabled gives back the original value.
+Extraction requires at least 3 shared pairs by default; pass a number (e.g. `mergeCommonKeys: 2`) to change that.
+As merge keys are a YAML 1.1 feature, the option has no effect unless the schema supports them.
 
 ## ToJS Options
 

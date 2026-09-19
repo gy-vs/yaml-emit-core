@@ -179,13 +179,19 @@ export class YAMLMap<
   set(
     key: K | NodeOf<K> | (K extends Scalar ? K['value'] : never),
     value: V | NodeOf<V> | (V extends Scalar ? V['value'] : never) | null,
-    options?: Omit<CreateNodeOptions, 'aliasDuplicateObjects'>
+    options?: Omit<
+      CreateNodeOptions,
+      'aliasDuplicateObjects' | 'mergeCommonKeys'
+    >
   ): this
   set(pair: Pair<K, V>): this
   set(
     keyOrPair: KeyArg<K, V>,
     value?: V | NodeOf<V> | (V extends Scalar ? V['value'] : never) | null,
-    options?: Omit<CreateNodeOptions, 'aliasDuplicateObjects'>
+    options?: Omit<
+      CreateNodeOptions,
+      'aliasDuplicateObjects' | 'mergeCommonKeys'
+    >
   ): this {
     const mk = this.schema.mapKey(keyOrPair)
 

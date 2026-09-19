@@ -140,7 +140,10 @@ export class YAMLSeq<
   set(
     idx: number,
     value: T | NodeOf<T>,
-    options?: Omit<CreateNodeOptions, 'aliasDuplicateObjects'>
+    options?: Omit<
+      CreateNodeOptions,
+      'aliasDuplicateObjects' | 'mergeCommonKeys'
+    >
   ): void {
     if (!Number.isInteger(idx))
       throw new TypeError(`Expected an integer, not ${JSON.stringify(idx)}.`)
